@@ -82,14 +82,21 @@ def login():
         st.error("帳號或密碼不正確。")
     st.stop()
 
-def work_form(existing=None, form_key="work_form"):
+def work_form(existing=None, form_key="work_form", category_options=None):
     existing = existing or {}
+    category_options = sorted(set(category_options or []))
+    current_category = existing.get("category", "")
+    if current_category and current_category not in category_options:
+        category_options.append(current_category)
+    category_choices = ["未分類", *category_options, "＋新增分類"]
+    category_index = category_choices.index(current_category) if current_category in category_choices else 0
     # 新增與編輯 tab 會同時建立在頁面中，因此每個表單必須有獨立 key。
     with st.form(form_key, clear_on_submit=existing == {}):
         left, right = st.columns(2)
         with left:
             title = st.text_input("作品名稱 *", existing.get("title", ""))
-            category = st.text_input("分類", existing.get("category", ""), placeholder="例如：商業、活動、短影音")
+            selected_category = st.selectbox("分類", category_choices, index=category_index)
+            category = st.text_input("新增分類", placeholder="例如：商業、活動、短影音") if selected_category == "＋新增分類" else ("" if selected_category == "未分類" else selected_category)
             short_description = st.text_area("簡短說明", existing.get("short_description", ""), height=100)
             description = st.text_area("完整作品說明", existing.get("description", ""), height=180)
             work_date = st.date_input("拍攝日期", value=date.fromisoformat(existing["work_date"]) if existing.get("work_date") else None)
@@ -134,13 +141,14 @@ def work_form(existing=None, form_key="work_form"):
 def manage_works(works):
     st.header("作品管理")
     st.caption("上傳封面與儲存作品會直接 Commit 至 GitHub，GitHub Pages 隨後重新部署。")
+    categories = [work.get("category", "").strip() for work in works if work.get("category", "").strip()]
     tabs = st.tabs(["作品列表", "新增作品", "編輯／刪除"])
     with tabs[0]:
         if works:
             st.dataframe([{"作品名稱":w.get("title"),"分類":w.get("category"),"合作單位":w.get("collaboration",{}).get("organization"),"拍攝日期":w.get("work_date"),"發布":w.get("published"),"精選":w.get("featured"),"排序":w.get("sort_order")} for w in sorted(works,key=lambda x:x.get("sort_order",999))], use_container_width=True, hide_index=True)
         else: st.info("尚無作品。")
     with tabs[1]:
-        new_work = work_form(form_key="new_work_form")
+        new_work = work_form(form_key="new_work_form", category_options=categories)
         if new_work:
             works.append(new_work); save_json(WORKS_PATH, works, f"Add work: {new_work['title']}"); st.success("已新增並提交 GitHub。重新整理後可看到最新資料。")
     with tabs[2]:
@@ -149,7 +157,7 @@ def manage_works(works):
             choices = {f"{w.get('title','未命名')} ({w.get('slug')})": i for i,w in enumerate(works)}
             chosen = st.selectbox("選擇作品", list(choices))
             index = choices[chosen]
-            edited = work_form(works[index], form_key=f"edit_work_form_{works[index].get('id', index)}")
+            edited = work_form(works[index], form_key=f"edit_work_form_{works[index].get('id', index)}", category_options=categories)
             if edited:
                 works[index] = edited; save_json(WORKS_PATH, works, f"Update work: {edited['title']}"); st.success("已更新並提交 GitHub。")
             st.divider(); st.warning("刪除作品只會刪除作品 JSON 紀錄，不會刪除既有封面檔案。")
