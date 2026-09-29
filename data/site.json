@@ -1,5 +1,5 @@
 {
-  "site_name": "",
+  "site_name": "葉宗頷作品集",
   "site_tagline": "",
   "hero": {
     "title": "以影像，留下每一個值得被看見的瞬間。",
@@ -19,9 +19,18 @@
     "other": ""
   },
   "services": [
-    { "name": "商業影像", "description": "品牌形象、產品與社群內容製作。" },
-    { "name": "活動紀錄", "description": "捕捉現場節奏與每個重要片刻。" },
-    { "name": "短影音", "description": "為平台與觀眾習慣打造有力的敘事。" }
+    {
+      "name": "商業影像",
+      "description": "品牌形象、產品與社群內容製作。"
+    },
+    {
+      "name": "活動紀錄",
+      "description": "捕捉現場節奏與每個重要片刻。"
+    },
+    {
+      "name": "短影音",
+      "description": "為平台與觀眾習慣打造有力的敘事。"
+    }
   ],
   "contact": {
     "title": "一起把想法拍成影像",
@@ -31,6 +40,7 @@
     "line": "",
     "other": ""
   },
-  "footer": { "text": "© 2026" }
+  "footer": {
+    "text": "© 2026"
+  }
 }
-
