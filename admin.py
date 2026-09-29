@@ -102,6 +102,7 @@ def work_form(existing=None, form_key="work_form", category_options=None):
             work_date = st.date_input("拍攝日期", value=date.fromisoformat(existing["work_date"]) if existing.get("work_date") else None)
             organization = st.text_input("合作單位", existing.get("collaboration", {}).get("organization", ""))
             collaboration_type = st.text_input("合作方式", existing.get("collaboration", {}).get("type", ""))
+            organization_logo = st.text_input("合作單位 LOGO 圖片網址", existing.get("collaboration", {}).get("logo", ""))
         with right:
             video_url = st.text_input("影片網址／嵌入網址", existing.get("video_url", ""))
             options = ["youtube", "vimeo", "embed"]
@@ -109,6 +110,7 @@ def work_form(existing=None, form_key="work_form", category_options=None):
             video_type = st.selectbox("影片類型", options, index=options.index(current_type) if current_type in options else 0)
             cover_url = st.text_input("封面圖片網址", existing.get("cover_image", ""))
             upload = st.file_uploader("或上傳封面（最大 5 MB）", type=["jpg", "jpeg", "png", "webp"])
+            logo_upload = st.file_uploader("或上傳合作單位 LOGO（最大 5 MB）", type=["jpg", "jpeg", "png", "webp"])
             roles = st.text_input("我的工作（以逗號分隔）", ", ".join(existing.get("my_role", [])))
             equipment = st.text_input("使用器材（以逗號分隔）", ", ".join(existing.get("equipment", [])))
             production_text = st.text_area("其他製作資訊（每行：欄位：內容）", "\n".join(f"{k}：{v}" for k,v in existing.get("production", {}).items()), height=100)
@@ -129,6 +131,14 @@ def work_form(existing=None, form_key="work_form", category_options=None):
         suffix = Path(upload.name).suffix.lower() or ".jpg"
         image_path = f"assets/covers/{slugify(title)}-{datetime.now():%Y%m%d%H%M%S}{suffix}"
         commit_file(image_path, upload.getvalue(), f"Upload cover image for {title}")
+    logo_path = organization_logo.strip()
+    if logo_upload:
+        if logo_upload.size > IMAGE_LIMIT:
+            st.error("合作單位 LOGO 不可超過 5 MB。")
+            return None
+        suffix = Path(logo_upload.name).suffix.lower() or ".png"
+        logo_path = f"assets/logos/{slugify(organization or title)}-{datetime.now():%Y%m%d%H%M%S}{suffix}"
+        commit_file(logo_path, logo_upload.getvalue(), f"Upload organization logo for {title}")
     production = {}
     for line in production_text.splitlines():
         if "：" in line: key, value = line.split("：", 1)
@@ -136,7 +146,7 @@ def work_form(existing=None, form_key="work_form", category_options=None):
         else: continue
         if key.strip() and value.strip(): production[key.strip()] = value.strip()
     now = datetime.now().astimezone().isoformat(timespec="seconds")
-    return {**existing, "id": existing.get("id") or slugify(title), "title": title.strip(), "slug": existing.get("slug") or slugify(title), "category": category.strip(), "short_description": short_description.strip(), "description": description.strip(), "video_url": video_url.strip(), "video_type": video_type, "cover_image": image_path, "work_date": work_date.isoformat() if work_date else "", "collaboration": {"organization": organization.strip(), "type": collaboration_type.strip()}, "my_role": split_csv(roles), "equipment": split_csv(equipment), "production": production, "featured": featured, "published": published, "sort_order": int(sort_order), "created_at": existing.get("created_at", now), "updated_at": now}
+    return {**existing, "id": existing.get("id") or slugify(title), "title": title.strip(), "slug": existing.get("slug") or slugify(title), "category": category.strip(), "short_description": short_description.strip(), "description": description.strip(), "video_url": video_url.strip(), "video_type": video_type, "cover_image": image_path, "work_date": work_date.isoformat() if work_date else "", "collaboration": {"organization": organization.strip(), "type": collaboration_type.strip(), "logo": logo_path}, "my_role": split_csv(roles), "equipment": split_csv(equipment), "production": production, "featured": featured, "published": published, "sort_order": int(sort_order), "created_at": existing.get("created_at", now), "updated_at": now}
 
 def manage_works(works):
     st.header("作品管理")

@@ -51,8 +51,11 @@ function workMedia(work) {
   return '<div class="showcase__media showcase__placeholder" aria-label="尚未提供作品封面">影像作品</div>';
 }
 function workDetails(work) {
-  const details = [['拍攝日期', work.work_date], ['合作單位', work.collaboration?.organization], ['合作方式', work.collaboration?.type], ['我的工作', work.my_role?.join('、 ')], ['使用器材', work.equipment?.join('、 ')], ...Object.entries(work.production || {})].filter(([, value]) => value);
-  return details.length ? `<dl class="showcase__details">${details.map(([label, value]) => `<div><dt>${text(label)}</dt><dd>${text(value)}</dd></div>`).join('')}</dl>` : '';
+  const collaboration = work.collaboration || {};
+  const details = [['拍攝日期', work.work_date], ['合作方式', collaboration.type], ['我的工作', work.my_role?.join('、 ')], ['使用器材', work.equipment?.join('、 ')], ...Object.entries(work.production || {})].filter(([, value]) => value);
+  const organization = collaboration.organization ? `<div><dt>合作單位</dt><dd class="collaboration-identity">${collaboration.logo ? `<img class="collaboration-logo" src="${escapeHTML(collaboration.logo)}" alt="${text(collaboration.organization)} LOGO" loading="lazy">` : ''}<span>${text(collaboration.organization)}</span></dd></div>` : '';
+  const rows = `${organization}${details.map(([label, value]) => `<div><dt>${text(label)}</dt><dd>${text(value)}</dd></div>`).join('')}`;
+  return rows ? `<dl class="showcase__details">${rows}</dl>` : '';
 }
 function workShowcase(work, index) {
   return `<article class="showcase reveal"><div class="showcase__media-wrap">${workMedia(work)}</div><div class="showcase__copy"><p class="eyebrow">${work.featured ? '精選作品 · ' : ''}${text(work.category || '未分類')} · ${String(index + 1).padStart(2, '0')}</p><h3>${text(work.title || '未命名作品')}</h3>${work.short_description ? `<p class="showcase__lead">${text(work.short_description)}</p>` : ''}${work.description ? `<p class="showcase__description">${text(work.description)}</p>` : ''}${workDetails(work)}</div></article>`;

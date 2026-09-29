@@ -1,0 +1,14 @@
+/* 合作單位 LOGO 與精選作品資訊卡。 */
+.collaboration-identity { display: flex; align-items: center; gap: .65rem; }
+.collaboration-logo { width: 2rem; height: 2rem; object-fit: contain; border: 1px solid var(--line); background: #fff; border-radius: .25rem; }
+.featured-slide__heading { padding: 1.2rem 1.25rem 1rem; }
+.featured-slide__heading .eyebrow { margin-bottom: .45rem; }
+.featured-slide__heading h3 { margin: 0; }
+.featured-slide__info { padding: 0 1.25rem 1.4rem; }
+.featured-slide__body { padding: .95rem 0 0; }
+.info-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; padding: .8rem 0; border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); font: inherit; cursor: pointer; }
+.info-toggle span { font-size: 1.25rem; line-height: 1; }
+.featured-slide__body[hidden] { display: none; }
+@media (max-width: 780px) {
+  .featured-slide__heading, .featured-slide__info { padding-inline: 1.1rem; }
+}
