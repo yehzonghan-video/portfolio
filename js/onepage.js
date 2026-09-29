@@ -6,10 +6,28 @@ const escapeHTML = (value = '') => String(value).replace(/[&<>'"]/g, char => ({ 
 const text = (value = '') => escapeHTML(value).replace(/\n/g, '<br>');
 
 function visibleWorks() { return state.works.filter(work => work.published).sort((a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999)); }
+function getYouTubeVideoId(url) {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, '').replace(/^m\./, '');
+    if (host === 'youtu.be') return parsed.pathname.split('/').filter(Boolean)[0] || null;
+    if (host !== 'youtube.com') return null;
+    if (parsed.pathname === '/watch') return parsed.searchParams.get('v');
+    const parts = parsed.pathname.split('/').filter(Boolean);
+    return ['shorts', 'embed'].includes(parts[0]) ? parts[1] || null : null;
+  } catch { return null; }
+}
+function getYouTubeEmbedUrl(url) {
+  const videoId = getYouTubeVideoId(url);
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+}
+function isYouTubeShort(url) {
+  try { return new URL(url).pathname.split('/').filter(Boolean)[0] === 'shorts'; } catch { return false; }
+}
 function embedUrl(work) {
   const url = work.video_url || '';
   if (!/^https?:\/\//i.test(url)) return '';
-  if (work.video_type === 'youtube') { const match = url.match(/(?:youtu\.be\/|v=|embed\/)([^?&/]+)/); return match ? `https://www.youtube-nocookie.com/embed/${match[1]}` : url; }
+  if (work.video_type === 'youtube') return getYouTubeEmbedUrl(url) || '';
   if (work.video_type === 'vimeo') { const match = url.match(/vimeo\.com\/(?:video\/)?(\d+)/); return match ? `https://player.vimeo.com/video/${match[1]}` : url; }
   return url;
 }
@@ -27,7 +45,8 @@ function setMeta() {
 function contactItems(contact) { return [['Email', contact.email], ['Instagram', contact.instagram], ['LINE', contact.line], ['其他', contact.other]].filter(([, value]) => value); }
 function workMedia(work) {
   const video = embedUrl(work);
-  if (video) return `<div class="showcase__media video"><iframe src="${escapeHTML(video)}" title="${text(work.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+  const videoClass = work.video_type === 'youtube' && isYouTubeShort(work.video_url) ? ' video--shorts' : '';
+  if (video) return `<div class="showcase__media video${videoClass}"><iframe src="${escapeHTML(video)}" title="${text(work.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
   if (work.cover_image) return `<img class="showcase__media" src="${escapeHTML(work.cover_image)}" alt="${text(work.title)} 封面" loading="lazy">`;
   return '<div class="showcase__media showcase__placeholder" aria-label="尚未提供作品封面">影像作品</div>';
 }

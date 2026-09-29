@@ -1,0 +1,11 @@
+/* 一般作品以橫向播放器呈現；YouTube Shorts 保留直式比例。 */
+.showcase__media.video { aspect-ratio: 16 / 9; }
+.showcase__media.video--shorts {
+  width: min(100%, 430px);
+  aspect-ratio: 9 / 16;
+  margin-inline: auto;
+}
+
+@media (max-width: 780px) {
+  .showcase__media.video--shorts { width: 100%; max-width: 430px; }
+}
