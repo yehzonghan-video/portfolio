@@ -141,8 +141,8 @@ def work_form(existing=None, form_key="work_form", category_options=None):
 def manage_works(works):
     st.header("作品管理")
     st.caption("上傳封面與儲存作品會直接 Commit 至 GitHub，GitHub Pages 隨後重新部署。")
-    categories = [work.get("category", "").strip() for work in works if work.get("category", "").strip()]
-    tabs = st.tabs(["作品列表", "新增作品", "編輯／刪除"])
+    categories = sorted({work.get("category", "").strip() for work in works if work.get("category", "").strip()})
+    tabs = st.tabs(["作品列表", "新增作品", "編輯／刪除", "分類管理"])
     with tabs[0]:
         if works:
             st.dataframe([{"作品名稱":w.get("title"),"分類":w.get("category"),"合作單位":w.get("collaboration",{}).get("organization"),"拍攝日期":w.get("work_date"),"發布":w.get("published"),"精選":w.get("featured"),"排序":w.get("sort_order")} for w in sorted(works,key=lambda x:x.get("sort_order",999))], use_container_width=True, hide_index=True)
@@ -164,6 +164,23 @@ def manage_works(works):
             confirm = st.checkbox("我確定要刪除這個作品", key=f"delete-{index}")
             if st.button("刪除這個作品", type="secondary", disabled=not confirm):
                 title = works[index].get("title", "work"); works.pop(index); save_json(WORKS_PATH, works, f"Delete work: {title}"); st.success("已刪除作品紀錄並提交 GitHub。"); st.rerun()
+    with tabs[3]:
+        st.caption("分類由作品資料自動產生；刪除分類後，該分類下的作品會改為「未分類」。")
+        if not categories:
+            st.info("目前沒有可管理的分類。")
+        else:
+            category = st.selectbox("選擇要刪除的分類", categories)
+            affected = [work for work in works if work.get("category", "").strip() == category]
+            st.warning(f"「{category}」目前套用在 {len(affected)} 件作品。")
+            confirm_category = st.checkbox(f"我確定要刪除「{category}」並將作品改為未分類", key=f"delete-category-{category}")
+            if st.button("刪除分類", type="secondary", disabled=not confirm_category):
+                now = datetime.now().astimezone().isoformat(timespec="seconds")
+                for work in affected:
+                    work["category"] = ""
+                    work["updated_at"] = now
+                save_json(WORKS_PATH, works, f"Delete category: {category}")
+                st.success("分類已刪除，受影響作品已改為未分類。")
+                st.rerun()
 
 def manage_site(site):
     st.header("網站內容管理")
