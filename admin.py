@@ -194,13 +194,23 @@ def manage_site(site):
         with about:
             a = site.get("about", {}); about_title = st.text_input("關於標題", a.get("title", "")); about_content = st.text_area("自我介紹", a.get("content", "")); philosophy = st.text_area("工作理念", a.get("philosophy", "")); about_other = st.text_area("其他說明", a.get("other", ""));
             services_json = st.text_area("服務（JSON 陣列；每項含 name、description）", json.dumps(site.get("services", []), ensure_ascii=False, indent=2), height=220)
+            process = site.get("process", {})
+            process_title = st.text_input("合作流程標題", process.get("title", "合作流程"))
+            process_steps_json = st.text_area("合作流程（JSON 陣列）", json.dumps(process.get("steps", []), ensure_ascii=False, indent=2), height=140)
         with contact:
             c = site.get("contact", {}); contact_title = st.text_input("聯絡標題", c.get("title", "")); contact_description = st.text_area("聯絡說明", c.get("description", "")); email = st.text_input("Email", c.get("email", "")); instagram = st.text_input("Instagram 網址", c.get("instagram", "")); line = st.text_input("LINE 網址", c.get("line", "")); other = st.text_input("其他連結", c.get("other", "")); footer = st.text_input("Footer 文字", site.get("footer", {}).get("text", ""))
         submit = st.form_submit_button("儲存網站內容", type="primary")
     if submit:
-        try: services = json.loads(services_json)
-        except json.JSONDecodeError: st.error("服務欄位不是有效 JSON。請使用範例的陣列格式。 "); return
-        site.update({"site_name":site_name.strip(),"site_tagline":tagline.strip(),"hero":{"title":hero_title.strip(),"subtitle":hero_subtitle.strip(),"description":hero_description.strip(),"button_text":hero_button.strip(),"image":hero_image.strip()},"featured":{"title":featured_title.strip(),"description":featured_description.strip()},"about":{"title":about_title.strip(),"content":about_content.strip(),"philosophy":philosophy.strip(),"other":about_other.strip()},"services":services,"contact":{"title":contact_title.strip(),"description":contact_description.strip(),"email":email.strip(),"instagram":instagram.strip(),"line":line.strip(),"other":other.strip()},"footer":{"text":footer.strip()}})
+        try:
+            services = json.loads(services_json)
+            process_steps = json.loads(process_steps_json)
+        except json.JSONDecodeError:
+            st.error("服務或合作流程欄位不是有效 JSON。請使用範例的陣列格式。")
+            return
+        if not isinstance(process_steps, list) or not all(isinstance(step, str) and step.strip() for step in process_steps):
+            st.error("合作流程必須是由文字組成的 JSON 陣列。")
+            return
+        site.update({"site_name":site_name.strip(),"site_tagline":tagline.strip(),"hero":{"title":hero_title.strip(),"subtitle":hero_subtitle.strip(),"description":hero_description.strip(),"button_text":hero_button.strip(),"image":hero_image.strip()},"featured":{"title":featured_title.strip(),"description":featured_description.strip()},"about":{"title":about_title.strip(),"content":about_content.strip(),"philosophy":philosophy.strip(),"other":about_other.strip()},"services":services,"process":{"title":process_title.strip(),"steps":[step.strip() for step in process_steps]},"contact":{"title":contact_title.strip(),"description":contact_description.strip(),"email":email.strip(),"instagram":instagram.strip(),"line":line.strip(),"other":other.strip()},"footer":{"text":footer.strip()}})
         save_json(SITE_PATH, site, "Update site content"); st.success("網站內容已提交 GitHub。")
 
 login()

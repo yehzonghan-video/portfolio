@@ -11,22 +11,21 @@
   <title>影像作品集</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="onepage.css">
 </head>
 <body>
   <a class="skip-link" href="#main">跳至內容</a>
   <header class="header">
-    <a class="brand" href="#/" aria-label="回首頁"></a>
+    <a class="brand" href="#top" aria-label="回首頁"></a>
     <button class="menu-button" aria-expanded="false" aria-controls="navigation">選單</button>
     <nav id="navigation" class="nav" aria-label="主要導覽">
-      <a href="#/works">作品</a><a href="#/about">關於</a><a href="#/services">服務</a><a href="#/contact">聯絡</a>
+      <a href="#top">首頁</a><a href="#works">作品</a><a href="#services">服務</a><a href="#about">關於</a><a class="nav__contact" href="#contact">聯絡我們</a>
     </nav>
   </header>
   <main id="main" tabindex="-1" aria-live="polite"></main>
   <footer id="footer" class="footer"></footer>
-  <template id="work-card-template">
-    <article class="work-card"><a class="work-card__link"><div class="work-card__cover"></div><div class="work-card__body"><p class="eyebrow work-card__category"></p><h3 class="work-card__title"></h3><p class="work-card__description"></p></div></a></article>
-  </template>
-  <script src="js/app.js" defer></script>
+  <a class="mobile-contact" href="#contact">聯絡我們</a>
+  <script src="js/onepage.js" defer></script>
 </body>
 </html>
 

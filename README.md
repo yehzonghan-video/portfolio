@@ -13,7 +13,7 @@
 python -m http.server 8000
 ```
 
-開啟 `http://localhost:8000`。前台頁面使用 hash 路由，因此 GitHub Pages 不需要伺服器重新導向：`#/works`、`#/works/demo-event-film`。
+開啟 `http://localhost:8000`。前台為一頁式長滾動網站，導覽列會平滑捲動到 `#works`、`#services`、`#about`、`#contact` 等區塊，因此 GitHub Pages 不需要伺服器重新導向。
 
 ## 啟動後台
 
@@ -42,7 +42,7 @@ GitHub Token 需要此 repository 的 **Contents: Read and write** 權限。前�
 
 ## 資料與管理方式
 
-- 所有公開文案都在 `data/site.json`；網站名稱留空時，前台不顯示品牌名稱。
+- 所有公開文案都在 `data/site.json`；網站名稱留空時，前台不顯示品牌名稱；`process` 可設定合作流程。
 - 所有作品都在 `data/works.json`；只有 `published: true` 的作品會出現在前台。
 - 進入 Streamlit 後台後，可從「作品管理」新增、編輯、刪除、上／下架、設定精選與排序；「網站內容管理」可更新首頁、關於、服務、聯絡與 Footer。
 - 若尚未設定 Secrets，後台仍可讀取本機 JSON 以預覽，但所有寫入會清楚提示需要設定 GitHub API。
