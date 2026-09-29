@@ -1,0 +1,36 @@
+/* 精選作品：可拖曳、原生觸控滑動且不讓頁面產生水平捲軸。 */
+body { overflow-x: hidden; }
+.featured-carousel { position: relative; }
+.featured-carousel__controls { display: flex; justify-content: flex-end; gap: .55rem; margin: -3.9rem 0 1.5rem; }
+.featured-carousel__controls button { width: 2.7rem; height: 2.7rem; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 1.2rem; cursor: pointer; transition: background .2s ease, color .2s ease; }
+.featured-carousel__controls button:hover { background: var(--ink); color: var(--black); }
+.featured-carousel__track { display: flex; gap: clamp(1rem, 2vw, 1.75rem); overflow-x: auto; overscroll-behavior-inline: contain; padding: .25rem max(5vw, 1.25rem) 1.25rem; margin-inline: min(-5vw, -1.25rem); scrollbar-width: thin; scroll-snap-type: x mandatory; scroll-behavior: smooth; cursor: grab; touch-action: pan-y; }
+.featured-carousel__track.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.featured-slide { flex: 0 0 min(31.5%, 440px); min-width: 300px; scroll-snap-align: start; overflow: hidden; border: 1px solid var(--line); background: var(--panel); }
+.featured-slide__media { background: #232321; }
+.featured-slide__media .showcase__media { margin-inline: auto; }
+.featured-slide__body { padding: 1.2rem 1.25rem 1.5rem; }
+.featured-slide h3 { margin: .2rem 0 .65rem; font-size: clamp(1.3rem, 2vw, 1.85rem); font-weight: 500; line-height: 1.15; }
+.featured-slide__body > p:last-child { margin: 0; color: var(--muted); font-size: .92rem; }
+.other-works { margin-top: clamp(5rem, 10vw, 9rem); }
+.other-works__head { margin-bottom: 1.5rem; }
+.other-works__head h3 { margin: .25rem 0 0; font-size: clamp(2rem, 4vw, 4rem); font-weight: 500; letter-spacing: -.04em; }
+.other-works .filters { margin: 0 0 2rem; }
+.work-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); }
+.work-card { background: var(--page); overflow: hidden; }
+.work-card__cover { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; background: #242421; }
+.work-card__placeholder { display: grid; place-items: center; color: var(--muted); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; }
+.work-card__body { padding: 1.2rem; }
+.work-card h3 { margin: .2rem 0 .65rem; font-size: 1.4rem; font-weight: 500; }
+.work-card__body > p { margin: 0; color: var(--muted); }
+.work-card details { margin-top: 1rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+.work-card summary { cursor: pointer; color: var(--ink); }
+.work-card details p { color: var(--muted); }
+.work-card details a { color: var(--ink); }
+@media (max-width: 780px) {
+  .featured-carousel__controls { display: none; }
+  .featured-carousel__track { gap: .9rem; padding-inline: max(5vw, 1.25rem); margin-inline: min(-5vw, -1.25rem); padding-bottom: 1rem; }
+  .featured-slide { flex-basis: 86%; min-width: 0; }
+  .featured-slide__body { padding: 1rem 1.1rem 1.25rem; }
+  .work-cards { grid-template-columns: 1fr; }
+}
