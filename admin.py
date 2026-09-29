@@ -82,9 +82,10 @@ def login():
         st.error("帳號或密碼不正確。")
     st.stop()
 
-def work_form(existing=None):
+def work_form(existing=None, form_key="work_form"):
     existing = existing or {}
-    with st.form("work_form", clear_on_submit=existing == {}):
+    # 新增與編輯 tab 會同時建立在頁面中，因此每個表單必須有獨立 key。
+    with st.form(form_key, clear_on_submit=existing == {}):
         left, right = st.columns(2)
         with left:
             title = st.text_input("作品名稱 *", existing.get("title", ""))
@@ -139,7 +140,7 @@ def manage_works(works):
             st.dataframe([{"作品名稱":w.get("title"),"分類":w.get("category"),"合作單位":w.get("collaboration",{}).get("organization"),"拍攝日期":w.get("work_date"),"發布":w.get("published"),"精選":w.get("featured"),"排序":w.get("sort_order")} for w in sorted(works,key=lambda x:x.get("sort_order",999))], use_container_width=True, hide_index=True)
         else: st.info("尚無作品。")
     with tabs[1]:
-        new_work = work_form()
+        new_work = work_form(form_key="new_work_form")
         if new_work:
             works.append(new_work); save_json(WORKS_PATH, works, f"Add work: {new_work['title']}"); st.success("已新增並提交 GitHub。重新整理後可看到最新資料。")
     with tabs[2]:
@@ -147,7 +148,8 @@ def manage_works(works):
         else:
             choices = {f"{w.get('title','未命名')} ({w.get('slug')})": i for i,w in enumerate(works)}
             chosen = st.selectbox("選擇作品", list(choices))
-            index = choices[chosen]; edited = work_form(works[index])
+            index = choices[chosen]
+            edited = work_form(works[index], form_key=f"edit_work_form_{works[index].get('id', index)}")
             if edited:
                 works[index] = edited; save_json(WORKS_PATH, works, f"Update work: {edited['title']}"); st.success("已更新並提交 GitHub。")
             st.divider(); st.warning("刪除作品只會刪除作品 JSON 紀錄，不會刪除既有封面檔案。")
