@@ -186,7 +186,7 @@ def manage_site(site):
     st.header("網站內容管理")
     st.caption("網站名稱留白時，前台導覽列、標題與 SEO 都不會顯示品牌名稱。")
     with st.form("site_form"):
-        basic, hero, about = st.tabs(["基本與首頁", "關於與服務", "聯絡與頁尾"])
+        basic, about, contact = st.tabs(["基本與首頁", "關於與服務", "聯絡與頁尾"])
         with basic:
             site_name = st.text_input("網站名稱", site.get("site_name", "")); tagline = st.text_input("網站標語", site.get("site_tagline", "")); h = site.get("hero", {})
             hero_title = st.text_area("Hero 標題", h.get("title", "")); hero_subtitle = st.text_input("Hero 副標題", h.get("subtitle", "")); hero_description = st.text_area("Hero 說明", h.get("description", "")); hero_button = st.text_input("Hero 按鈕文字", h.get("button_text", "")); hero_image = st.text_input("Hero 圖片網址", h.get("image", "")); f = site.get("featured", {})
