@@ -51,10 +51,10 @@
       "測試2"
     ],
     "production": {},
-    "featured": false,
+    "featured": true,
     "published": true,
     "sort_order": 2,
     "created_at": "2026-09-29T18:31:59+00:00",
-    "updated_at": "2026-09-29T18:32:50+00:00"
+    "updated_at": "2026-09-29T19:00:51+00:00"
   }
 ]
