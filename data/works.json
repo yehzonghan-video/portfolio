@@ -44,11 +44,11 @@
     "my_role": [],
     "equipment": [],
     "production": {},
-    "featured": false,
-    "published": false,
+    "featured": true,
+    "published": true,
     "sort_order": 999,
     "created_at": "2026-09-29T04:34:06+00:00",
-    "updated_at": "2026-09-29T04:41:17+00:00"
+    "updated_at": "2026-09-29T04:41:37+00:00"
   },
   {
     "id": "123456",
