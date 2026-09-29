@@ -30,7 +30,7 @@
     "id": "12345",
     "title": "12345",
     "slug": "12345",
-    "category": "",
+    "category": "活動",
     "short_description": "",
     "description": "",
     "video_url": "",
@@ -48,7 +48,7 @@
     "published": false,
     "sort_order": 999,
     "created_at": "2026-09-29T04:34:06+00:00",
-    "updated_at": "2026-09-29T04:34:06+00:00"
+    "updated_at": "2026-09-29T04:41:17+00:00"
   },
   {
     "id": "123456",
