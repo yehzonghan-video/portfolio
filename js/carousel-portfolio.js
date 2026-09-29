@@ -1,15 +1,10 @@
 /* 作品 Carousel：重用 onepage.js 的 workMedia 與 YouTube URL 解析邏輯。 */
-function carouselCardMedia(work) {
-  if (work.cover_image) return `<img class="work-card__cover" src="${escapeHTML(work.cover_image)}" alt="${text(work.title)} 封面" loading="lazy">`;
-  return '<div class="work-card__cover work-card__placeholder">影像作品</div>';
-}
-
 function featuredSlide(work, index) {
-  return `<article class="featured-slide"><div class="featured-slide__media">${workMedia(work)}</div><div class="featured-slide__body"><p class="eyebrow">${text(work.category || '未分類')} · ${String(index + 1).padStart(2, '0')}</p><h3>${text(work.title || '未命名作品')}</h3>${work.short_description ? `<p>${text(work.short_description)}</p>` : ''}</div></article>`;
+  return `<article class="featured-slide"><div class="featured-slide__media">${workMedia(work)}</div><div class="featured-slide__body"><p class="eyebrow">${text(work.category || '未分類')} · ${String(index + 1).padStart(2, '0')}</p><h3>${text(work.title || '未命名作品')}</h3>${work.short_description ? `<p>${text(work.short_description)}</p>` : ''}${work.description ? `<p class="work-description">${text(work.description)}</p>` : ''}${workDetails(work)}</div></article>`;
 }
 
 function otherWorkCard(work) {
-  return `<article class="work-card reveal">${carouselCardMedia(work)}<div class="work-card__body"><p class="eyebrow">${text(work.category || '未分類')}</p><h3>${text(work.title || '未命名作品')}</h3><p>${text(work.short_description)}</p><details><summary>查看作品資訊</summary>${work.description ? `<p>${text(work.description)}</p>` : ''}${work.video_url ? `<a href="${escapeHTML(work.video_url)}" target="_blank" rel="noopener">開啟作品影片 ↗</a>` : ''}</details></div></article>`;
+  return `<article class="work-card reveal"><div class="work-card__body"><p class="eyebrow">${text(work.category || '未分類')}</p><h3>${text(work.title || '未命名作品')}</h3>${work.short_description ? `<p>${text(work.short_description)}</p>` : ''}${work.description ? `<p class="work-description">${text(work.description)}</p>` : ''}${workDetails(work)}${work.video_url ? `<a class="work-card__link" href="${escapeHTML(work.video_url)}" target="_blank" rel="noopener">開啟作品影片 ↗</a>` : ''}</div></article>`;
 }
 
 function renderOtherWorks(otherWorks, category) {

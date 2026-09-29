@@ -12,6 +12,8 @@ body { overflow-x: hidden; }
 .featured-slide__body { padding: 1.2rem 1.25rem 1.5rem; }
 .featured-slide h3 { margin: .2rem 0 .65rem; font-size: clamp(1.3rem, 2vw, 1.85rem); font-weight: 500; line-height: 1.15; }
 .featured-slide__body > p:last-child { margin: 0; color: var(--muted); font-size: .92rem; }
+.featured-slide .work-description, .work-card .work-description { margin: 1rem 0 0; color: var(--muted); }
+.featured-slide .showcase__details, .work-card .showcase__details { margin-top: 1.25rem; }
 .other-works { margin-top: clamp(5rem, 10vw, 9rem); }
 .other-works__head { margin-bottom: 1.5rem; }
 .other-works__head h3 { margin: .25rem 0 0; font-size: clamp(2rem, 4vw, 4rem); font-weight: 500; letter-spacing: -.04em; }
@@ -23,10 +25,7 @@ body { overflow-x: hidden; }
 .work-card__body { padding: 1.2rem; }
 .work-card h3 { margin: .2rem 0 .65rem; font-size: 1.4rem; font-weight: 500; }
 .work-card__body > p { margin: 0; color: var(--muted); }
-.work-card details { margin-top: 1rem; padding-top: .9rem; border-top: 1px solid var(--line); }
-.work-card summary { cursor: pointer; color: var(--ink); }
-.work-card details p { color: var(--muted); }
-.work-card details a { color: var(--ink); }
+.work-card__link { display: inline-block; margin-top: 1.25rem; color: var(--ink); }
 @media (max-width: 780px) {
   .featured-carousel__controls { display: none; }
   .featured-carousel__track { gap: .9rem; padding-inline: max(5vw, 1.25rem); margin-inline: min(-5vw, -1.25rem); padding-bottom: 1rem; }
