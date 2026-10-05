@@ -1,0 +1,17 @@
+/* 直式影片：桌機讓資訊卡從影片右側展開，手機再回到上下閱讀。 */
+.featured-slide--portrait {
+  flex-basis: min(72%, 760px);
+  display: grid;
+  grid-template-columns: minmax(220px, .72fr) minmax(260px, 1fr);
+  grid-template-areas: "heading heading" "media info";
+  align-items: start;
+}
+.featured-slide--portrait .featured-slide__heading { grid-area: heading; }
+.featured-slide--portrait .featured-slide__media { grid-area: media; display: flex; justify-content: center; background: transparent; }
+.featured-slide--portrait .featured-slide__media .showcase__media.video--shorts { width: min(100%, 390px); }
+.featured-slide--portrait .featured-slide__info { grid-area: info; align-self: stretch; padding-top: 0; }
+
+@media (max-width: 780px) {
+  .featured-slide--portrait { display: block; flex-basis: 86%; }
+  .featured-slide--portrait .featured-slide__info { padding-top: 0; }
+}

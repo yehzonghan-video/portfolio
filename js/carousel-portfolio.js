@@ -1,6 +1,7 @@
 /* 作品 Carousel：重用 onepage.js 的 workMedia 與 YouTube URL 解析邏輯。 */
 function featuredSlide(work, index) {
-  return `<article class="featured-slide"><header class="featured-slide__heading"><p class="eyebrow">${text(work.category || '未分類')} · ${String(index + 1).padStart(2, '0')}</p><h3>${text(work.title || '未命名作品')}</h3></header><div class="featured-slide__media">${workMedia(work)}</div><div class="featured-slide__info"><button class="info-toggle" type="button" data-info-toggle aria-expanded="true">收合資訊 <span>−</span></button><div class="featured-slide__body" data-featured-info>${work.short_description ? `<p>${text(work.short_description)}</p>` : ''}${work.description ? `<p class="work-description">${text(work.description)}</p>` : ''}${workDetails(work)}</div></div></article>`;
+  const portraitClass = isYouTubeShort(work.video_url) ? ' featured-slide--portrait' : '';
+  return `<article class="featured-slide${portraitClass}"><header class="featured-slide__heading"><p class="eyebrow">${text(work.category || '未分類')} · ${String(index + 1).padStart(2, '0')}</p><h3>${text(work.title || '未命名作品')}</h3></header><div class="featured-slide__media">${workMedia(work)}</div><div class="featured-slide__info"><button class="info-toggle" type="button" data-info-toggle aria-expanded="true">收合資訊 <span>−</span></button><div class="featured-slide__body" data-featured-info>${work.short_description ? `<p>${text(work.short_description)}</p>` : ''}${work.description ? `<p class="work-description">${text(work.description)}</p>` : ''}${workDetails(work)}</div></div></article>`;
 }
 
 function otherWorkCard(work) {
