@@ -1,11 +1,18 @@
 /* 作品 Carousel：重用 onepage.js 的 workMedia 與 YouTube URL 解析邏輯。 */
+function featuredMedia(work) {
+  const video = embedUrl(work);
+  if (!video || !work.cover_image) return workMedia(work);
+  const portraitClass = isYouTubeShort(work.video_url) ? ' video--shorts' : '';
+  return `<button class="showcase__media featured-cover${portraitClass}" type="button" data-video-src="${escapeHTML(video)}" data-video-title="${escapeHTML(work.title)}" aria-label="播放 ${text(work.title)}"><img src="${escapeHTML(work.cover_image)}" alt="${text(work.title)} 封面" loading="lazy"><span>觀看影片 <b>▶</b></span></button>`;
+}
+
 function featuredSlide(work, index) {
   const portraitClass = isYouTubeShort(work.video_url) ? ' featured-slide--portrait' : '';
   const collapsedClass = ' is-info-collapsed';
   const defaultExpanded = 'false';
   const toggleText = '展開資訊 <span>+</span>';
   const hidden = ' hidden';
-  return `<article class="featured-slide${portraitClass}${collapsedClass}"><header class="featured-slide__heading"><p class="eyebrow">${text(work.category || '未分類')} · ${String(index + 1).padStart(2, '0')}</p><h3>${text(work.title || '未命名作品')}</h3></header><div class="featured-slide__media">${workMedia(work)}</div><div class="featured-slide__info"><button class="info-toggle" type="button" data-info-toggle aria-expanded="${defaultExpanded}">${toggleText}</button><div class="featured-slide__body" data-featured-info${hidden}>${work.short_description ? `<p>${text(work.short_description)}</p>` : ''}${work.description ? `<p class="work-description">${text(work.description)}</p>` : ''}${workDetails(work)}</div></div></article>`;
+  return `<article class="featured-slide${portraitClass}${collapsedClass}"><header class="featured-slide__heading"><p class="eyebrow">${text(work.category || '未分類')} · ${String(index + 1).padStart(2, '0')}</p><h3>${text(work.title || '未命名作品')}</h3></header><div class="featured-slide__media">${featuredMedia(work)}</div><div class="featured-slide__info"><button class="info-toggle" type="button" data-info-toggle aria-expanded="${defaultExpanded}">${toggleText}</button><div class="featured-slide__body" data-featured-info${hidden}>${work.short_description ? `<p>${text(work.short_description)}</p>` : ''}${work.description ? `<p class="work-description">${text(work.description)}</p>` : ''}${workDetails(work)}</div></div></article>`;
 }
 
 function otherWorkCard(work) {
@@ -52,6 +59,21 @@ function initInfoToggles(scope) {
   }));
 }
 
+function initFeaturedVideoPreviews(scope) {
+  scope.querySelectorAll('[data-video-src]').forEach(cover => cover.addEventListener('click', () => {
+    const player = document.createElement('div');
+    player.className = cover.className.replace('featured-cover', 'video');
+    const iframe = document.createElement('iframe');
+    iframe.src = cover.dataset.videoSrc;
+    iframe.title = cover.dataset.videoTitle || '作品影片';
+    iframe.loading = 'lazy';
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    iframe.allowFullscreen = true;
+    player.append(iframe);
+    cover.replaceWith(player);
+  }, { once: true }));
+}
+
 function buildPortfolioCarousel() {
   if (!state.site || !document.querySelector('#works')) return false;
   const allWorks = visibleWorks();
@@ -66,6 +88,7 @@ function buildPortfolioCarousel() {
   worksSection.innerHTML = `<div class="section-head reveal is-visible"><div><p class="eyebrow">Selected work</p><h2>${text(featured.title || '精選作品')}</h2></div><p>${text(featured.description)}</p></div>${featuredWorks.length ? `<div class="featured-carousel-groups">${featuredCarouselGroup(landscapeFeaturedWorks, '橫式作品', hasBothOrientations)}${featuredCarouselGroup(portraitFeaturedWorks, '直式作品', hasBothOrientations)}</div>` : '<p class="empty">目前尚無精選作品。</p>'}${otherWorks.length ? `<div class="other-works"><div class="other-works__head"><p class="eyebrow">More work</p><h3>其他作品</h3></div>${categories.length ? `<div class="filters"><button class="filter active" data-other-category="">全部作品</button>${categories.map(category => `<button class="filter" data-other-category="${escapeHTML(category)}">${text(category)}</button>`).join('')}</div>` : ''}<div id="other-works-list" class="work-cards"></div></div>` : ''}`;
   worksSection.querySelectorAll('.featured-carousel').forEach(initCarousel);
   initInfoToggles(worksSection);
+  initFeaturedVideoPreviews(worksSection);
   renderOtherWorks(otherWorks, '');
   worksSection.querySelectorAll('[data-other-category]').forEach(button => button.addEventListener('click', () => { worksSection.querySelectorAll('[data-other-category]').forEach(item => item.classList.toggle('active', item === button)); renderOtherWorks(otherWorks, button.dataset.otherCategory); }));
   observeReveals(worksSection);
