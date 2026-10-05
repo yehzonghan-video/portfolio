@@ -2,15 +2,16 @@
 .featured-slide--portrait {
   flex-basis: min(72%, 760px);
   display: grid;
-  grid-template-columns: minmax(220px, .72fr) minmax(260px, 1fr);
+  grid-template-columns: minmax(0, 340px) minmax(260px, 1fr);
   grid-template-areas: "heading heading" "media info";
   align-items: start;
+  transition: flex-basis .3s ease;
 }
 .featured-slide--portrait .featured-slide__heading { grid-area: heading; }
 .featured-slide--portrait .featured-slide__media { grid-area: media; display: flex; justify-content: center; background: transparent; }
 .featured-slide--portrait .featured-slide__media .showcase__media.video--shorts { width: min(100%, 390px); }
 .featured-slide--portrait .featured-slide__info { grid-area: info; align-self: stretch; padding-top: 0; }
-.featured-slide--portrait.is-info-collapsed { grid-template-columns: minmax(0, 1fr) 2.9rem; }
+.featured-slide--portrait.is-info-collapsed { grid-template-columns: minmax(0, 340px) 2.9rem; flex-basis: 390px; }
 .featured-slide--portrait.is-info-collapsed .featured-slide__info { padding-inline: 0; }
 .featured-slide--portrait.is-info-collapsed .info-toggle { height: 100%; justify-content: center; padding: .65rem 0; writing-mode: vertical-rl; border-top: 0; border-bottom: 0; border-left: 1px solid var(--line); }
 .featured-slide--portrait.is-info-collapsed .info-toggle span { margin-top: .35rem; }
@@ -18,12 +19,12 @@
 @media (max-width: 780px) {
   .featured-slide--portrait {
     display: grid;
-    grid-template-columns: minmax(108px, .58fr) minmax(175px, 1fr);
+    grid-template-columns: 150px minmax(175px, 1fr);
     grid-template-areas: "heading heading" "media info";
     flex-basis: 92%;
   }
   .featured-slide--portrait .featured-slide__heading { padding-bottom: .8rem; }
   .featured-slide--portrait .featured-slide__info { padding: 0 1rem 1rem; }
   .featured-slide--portrait .featured-slide__media .showcase__media.video--shorts { width: 100%; }
-  .featured-slide--portrait.is-info-collapsed { grid-template-columns: minmax(0, 1fr) 2.65rem; }
+  .featured-slide--portrait.is-info-collapsed { grid-template-columns: 150px 2.65rem; flex-basis: 192px; }
 }
