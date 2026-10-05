@@ -1,4 +1,4 @@
-/* 直式影片：桌機讓資訊卡從影片右側展開，手機再回到上下閱讀。 */
+/* 直式影片：所有裝置皆讓資訊卡從影片右側展開。 */
 .featured-slide--portrait {
   flex-basis: min(72%, 760px);
   display: grid;
@@ -12,6 +12,13 @@
 .featured-slide--portrait .featured-slide__info { grid-area: info; align-self: stretch; padding-top: 0; }
 
 @media (max-width: 780px) {
-  .featured-slide--portrait { display: block; flex-basis: 86%; }
-  .featured-slide--portrait .featured-slide__info { padding-top: 0; }
+  .featured-slide--portrait {
+    display: grid;
+    grid-template-columns: minmax(108px, .58fr) minmax(175px, 1fr);
+    grid-template-areas: "heading heading" "media info";
+    flex-basis: 92%;
+  }
+  .featured-slide--portrait .featured-slide__heading { padding-bottom: .8rem; }
+  .featured-slide--portrait .featured-slide__info { padding: 0 1rem 1rem; }
+  .featured-slide--portrait .featured-slide__media .showcase__media.video--shorts { width: 100%; }
 }
