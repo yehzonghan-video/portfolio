@@ -33,8 +33,10 @@ function initCarousel(track) {
 function initInfoToggles(scope) {
   scope.querySelectorAll('[data-info-toggle]').forEach(button => button.addEventListener('click', () => {
     const panel = button.parentElement.querySelector('[data-featured-info]');
+    const slide = button.closest('.featured-slide');
     const expanded = button.getAttribute('aria-expanded') === 'true';
     panel.hidden = expanded;
+    slide.classList.toggle('is-info-collapsed', expanded);
     button.setAttribute('aria-expanded', String(!expanded));
     button.innerHTML = `${expanded ? '展開資訊' : '收合資訊'} <span>${expanded ? '+' : '−'}</span>`;
   }));
