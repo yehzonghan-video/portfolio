@@ -16,9 +16,15 @@ function renderOtherWorks(otherWorks, category) {
   observeReveals(root);
 }
 
-function initCarousel(track) {
-  const previous = document.querySelector('[data-carousel="previous"]');
-  const next = document.querySelector('[data-carousel="next"]');
+function featuredCarouselGroup(works, label, showLabel) {
+  if (!works.length) return '';
+  return `<section class="featured-carousel-group">${showLabel ? `<h3>${label}</h3>` : ''}<div class="featured-carousel"><div class="featured-carousel__controls"><button type="button" data-carousel="previous" aria-label="上一個${label}">←</button><button type="button" data-carousel="next" aria-label="下一個${label}">→</button></div><div class="featured-carousel__track" aria-label="${label}橫向展示">${works.map(featuredSlide).join('')}</div></div></section>`;
+}
+
+function initCarousel(carousel) {
+  const track = carousel.querySelector('.featured-carousel__track');
+  const previous = carousel.querySelector('[data-carousel="previous"]');
+  const next = carousel.querySelector('[data-carousel="next"]');
   const move = direction => track.scrollBy({ left: direction * Math.max(track.clientWidth * .84, 260), behavior: 'smooth' });
   previous?.addEventListener('click', () => move(-1));
   next?.addEventListener('click', () => move(1));
@@ -46,13 +52,15 @@ function buildPortfolioCarousel() {
   if (!state.site || !document.querySelector('#works')) return false;
   const allWorks = visibleWorks();
   const featuredWorks = allWorks.filter(work => work.featured);
+  const landscapeFeaturedWorks = featuredWorks.filter(work => !isYouTubeShort(work.video_url));
+  const portraitFeaturedWorks = featuredWorks.filter(work => isYouTubeShort(work.video_url));
   const otherWorks = allWorks.filter(work => !work.featured);
   const categories = [...new Set(otherWorks.map(work => work.category).filter(Boolean))];
   const worksSection = document.querySelector('#works');
   const featured = state.site.featured || {};
-  worksSection.innerHTML = `<div class="section-head reveal is-visible"><div><p class="eyebrow">Selected work</p><h2>${text(featured.title || '精選作品')}</h2></div><p>${text(featured.description)}</p></div>${featuredWorks.length ? `<div class="featured-carousel"><div class="featured-carousel__controls"><button type="button" data-carousel="previous" aria-label="上一個精選作品">←</button><button type="button" data-carousel="next" aria-label="下一個精選作品">→</button></div><div class="featured-carousel__track" aria-label="精選作品橫向展示">${featuredWorks.map(featuredSlide).join('')}</div></div>` : '<p class="empty">目前尚無精選作品。</p>'}${otherWorks.length ? `<div class="other-works"><div class="other-works__head"><p class="eyebrow">More work</p><h3>其他作品</h3></div>${categories.length ? `<div class="filters"><button class="filter active" data-other-category="">全部作品</button>${categories.map(category => `<button class="filter" data-other-category="${escapeHTML(category)}">${text(category)}</button>`).join('')}</div>` : ''}<div id="other-works-list" class="work-cards"></div></div>` : ''}`;
-  const track = worksSection.querySelector('.featured-carousel__track');
-  if (track) initCarousel(track);
+  const hasBothOrientations = landscapeFeaturedWorks.length && portraitFeaturedWorks.length;
+  worksSection.innerHTML = `<div class="section-head reveal is-visible"><div><p class="eyebrow">Selected work</p><h2>${text(featured.title || '精選作品')}</h2></div><p>${text(featured.description)}</p></div>${featuredWorks.length ? `<div class="featured-carousel-groups">${featuredCarouselGroup(landscapeFeaturedWorks, '橫式作品', hasBothOrientations)}${featuredCarouselGroup(portraitFeaturedWorks, '直式作品', hasBothOrientations)}</div>` : '<p class="empty">目前尚無精選作品。</p>'}${otherWorks.length ? `<div class="other-works"><div class="other-works__head"><p class="eyebrow">More work</p><h3>其他作品</h3></div>${categories.length ? `<div class="filters"><button class="filter active" data-other-category="">全部作品</button>${categories.map(category => `<button class="filter" data-other-category="${escapeHTML(category)}">${text(category)}</button>`).join('')}</div>` : ''}<div id="other-works-list" class="work-cards"></div></div>` : ''}`;
+  worksSection.querySelectorAll('.featured-carousel').forEach(initCarousel);
   initInfoToggles(worksSection);
   renderOtherWorks(otherWorks, '');
   worksSection.querySelectorAll('[data-other-category]').forEach(button => button.addEventListener('click', () => { worksSection.querySelectorAll('[data-other-category]').forEach(item => item.classList.toggle('active', item === button)); renderOtherWorks(otherWorks, button.dataset.otherCategory); }));

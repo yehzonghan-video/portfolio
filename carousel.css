@@ -1,6 +1,8 @@
 /* 精選作品：可拖曳、原生觸控滑動且不讓頁面產生水平捲軸。 */
 body { overflow-x: hidden; }
 .featured-carousel { position: relative; }
+.featured-carousel-group + .featured-carousel-group { margin-top: clamp(3.5rem, 8vw, 7rem); }
+.featured-carousel-group > h3 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -.04em; }
 .featured-carousel__controls { display: flex; justify-content: flex-end; gap: .55rem; margin: -3.9rem 0 1.5rem; }
 .featured-carousel__controls button { width: 2.7rem; height: 2.7rem; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 1.2rem; cursor: pointer; transition: background .2s ease, color .2s ease; }
 .featured-carousel__controls button:hover { background: var(--ink); color: var(--black); }
